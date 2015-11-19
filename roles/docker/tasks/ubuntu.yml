@@ -1,0 +1,30 @@
+---
+- name: Add Docker Repo Key
+  apt_key: keyserver=keyserver.ubuntu.com id=58118E89F3A912897C070ADBF76221572C52609D
+
+- name: Add Docker Repo
+  apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-{{ansible_distribution_release}} main' state=present
+
+- name: Update Apt Cache
+  apt: update_cache=yes
+
+- name: Install Docker and Other Container Utilities
+  apt: name={{item}} state=present
+  with_items:
+    - bridge-utils
+    - docker-engine={{docker_version}}*
+
+- name: Update Docker Opts - Trusty
+  template: src=upstart-docker-default.j2 dest=/etc/default/docker
+  notify: restart docker
+  when: ansible_distribution_release == "trusty" and docker_opts is defined
+
+- name: Docker Opts - create systemd override directory
+  file: path=/etc/systemd/system/docker.service.d state=directory
+  when: ansible_distribution_release == "vivid" and docker_opts is defined
+
+- name: Docker Opts - create systemd unit file
+  template: src=systemd-unit-exec.j2 dest=/etc/systemd/system/docker.service.d/exec.conf
+  notify: reload systemd
+  when: ansible_distribution_release == "vivid" and docker_opts is defined
+

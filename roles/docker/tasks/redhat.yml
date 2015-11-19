@@ -1,0 +1,16 @@
+---
+
+- name: Add Docker Yum Repo
+  template: src=docker.repo.j2 dest=/etc/yum.repos.d/docker.repo
+
+- name: Install Docker and Other Container Utilities
+  yum: name='docker-engine-{{docker_version}}*'  state=present
+
+- name: Docker Opts - create systemd override directory
+  file: path=/etc/systemd/system/docker.service.d state=directory
+  when: docker_opts is defined
+
+- name: Docker Opts - create systemd unit file
+  template: src=systemd-unit-exec.j2 dest=/etc/systemd/system/docker.service.d/exec.conf
+  when: docker_opts is defined
+  notify: reload systemd

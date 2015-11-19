@@ -1,0 +1,5 @@
+/*.lock
+.bundle/
+.kitchen/
+.vagrant/
+vendor/

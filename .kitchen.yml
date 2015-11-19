@@ -1,0 +1,41 @@
+---
+driver:
+    name: vagrant
+
+provisioner:
+    name: ansible_playbook
+    hosts: docker-hosts
+    require_ansible_repo: true
+    ansible_yum_repo: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+    ansible_verbose: true
+    ansible_verbosity: 2
+    ansible_diff: true
+
+platforms:
+    - name: ubuntu-trusty
+      driver_plugin: vagrant
+      driver_config:
+          box: ubuntu/trusty64
+          customize:
+              cpus: 1
+              memory: 1024
+
+    - name: ubuntu-vivid
+      driver_plugin: vagrant
+      driver_config:
+          box: ubuntu/vivid64
+          customize:
+              cpus: 1
+              memory: 1024
+
+    - name: centos-7
+      driver_plugin: vagrant
+      driver_config:
+          box: centos/7
+          customize:
+              cpus: 1
+              memory: 1024
+suites:
+    - name: docker
+
+

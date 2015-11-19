@@ -1,0 +1,5 @@
+{{ ansible_managed }}
+
+[Service]
+ExecStart=
+ExecStart=/usr/bin/docker daemon -H fd:// {{docker_opts}}
