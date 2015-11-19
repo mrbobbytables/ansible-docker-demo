@@ -27,7 +27,7 @@ The serverspec file is located in `/roles/docker/spec/docker_spec.rb` and verifi
 * If docker_opts are specified; it verifies the docker daemon is running with those options.
 
 #### docker_spec.rb
-```
+```ruby
 require_relative '/tmp/kitchen/spec/spec_helper.rb'
 require 'yaml'
 
