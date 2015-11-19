@@ -1,8 +1,9 @@
----
-- name: restart docker
-  sudo: true
-  service: name=docker enabled=yes state=restarted
+# handlers are ALWAYS executed in the order in which they're in this file
+# restarting services should always be the last handler
 
+---
 - name: reload systemd
-  sudo: true
   command: systemctl daemon-reload
+
+- name: restart docker
+  service: name=docker enabled=yes state=restarted

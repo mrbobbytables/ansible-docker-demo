@@ -4,7 +4,18 @@
   template: src=docker.repo.j2 dest=/etc/yum.repos.d/docker.repo
 
 - name: Install Docker and Other Container Utilities
-  yum: name='docker-engine-{{docker_version}}*'  state=present
+  yum: name={{item}}  state=present
+  with_items:
+      - bridge-utils
+      - docker-engine
+  when: docker_version is not defined
+
+- name: Install Docker and Other Container Utilities
+  yum: name={{item}}  state=present
+  with_items:
+      - bridge-utils
+      - docker-engine-{{docker_version}}*
+  when: docker_version is defined
 
 - name: Docker Opts - create systemd override directory
   file: path=/etc/systemd/system/docker.service.d state=directory

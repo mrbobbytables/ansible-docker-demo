@@ -12,19 +12,29 @@
   apt: name={{item}} state=present
   with_items:
     - bridge-utils
+    - docker-engine
+  when: docker_version is not defined
+
+- name: Install Docker and Other Container Utilities
+  apt: name={{item}} state=present
+  with_items:
+    - bridge-utils
     - docker-engine={{docker_version}}*
+  when: docker_version is defined
 
 - name: Update Docker Opts - Trusty
   template: src=upstart-docker-default.j2 dest=/etc/default/docker
   notify: restart docker
-  when: ansible_distribution_release == "trusty" and docker_opts is defined
+  when: ansible_distribution_version|int == 14 and docker_opts is defined
 
 - name: Docker Opts - create systemd override directory
   file: path=/etc/systemd/system/docker.service.d state=directory
-  when: ansible_distribution_release == "vivid" and docker_opts is defined
+  when: ansible_distribution_version|int >= 15 and docker_opts is defined
 
 - name: Docker Opts - create systemd unit file
   template: src=systemd-unit-exec.j2 dest=/etc/systemd/system/docker.service.d/exec.conf
-  notify: reload systemd
-  when: ansible_distribution_release == "vivid" and docker_opts is defined
+  notify: 
+    - reload systemd
+    - restart docker
+  when: ansible_distribution_version|int >= 15  and docker_opts is defined
 
