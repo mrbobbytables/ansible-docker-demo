@@ -2,21 +2,26 @@ Installs and verifies docker on the following platforms:
 * Ubuntu (14.04+)
 * CentOS (7+)
 
-1. Install RVM - https://rvm.io/rvm/install
+1. Download and install vagrant: https://www.vagrantup.com/downloads.html
+2. Install RVM - https://rvm.io/rvm/install
 ```
 gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 \curl -sSL https://get.rvm.io | bash -s stable --ruby
 source $HOME/.rvm/scripts/rvm
 ```
-2. install bundler:
+3. install bundler:
    `gem install bundler`
-3. install test-kitchen / ansible dependencies
+4. install test-kitchen / ansible dependencies
    `bundle install`
-4. run a converge on all version
+5. Due to an intermittent issue with test-kitchen / vagrant I suggest getting the boxes you wish to test manually before running a converge:
+  * `vagrant box add --provider virtualbox ubuntu/trusty64`
+  * `vagrant box add --provider virtualbox ubuntu/vivid64`
+  * `vagrant box add --provider virtualbox centos/7`
+6. run a converge on all version
    `kitchen converge -c=3`
-5. run verification on all versions
+7. run verification on all versions
    `kitchen verify -c=3`
-6. See that all iterations are verified with:
+8. See that all iterations are verified with:
    `kitchen list`
 
 The serverspec file is located in `/roles/docker/spec/docker_spec.rb` and verifies the following things:
